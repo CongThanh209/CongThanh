@@ -1,4 +1,4 @@
---Phân loại recency, frequency, monetary. tạo bảng tạm chưa data
+--Phân loại recency, frequency, monetary. tạo bảng tạm chứa data
 select * into #temp from (
 select *, concat(R,F,M) as RFM from (
 select CustomerID, recency ,frequency , monetary , case when recency >= 9 and recency < 40 then '4'
