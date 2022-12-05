@@ -1,0 +1,34 @@
+--Phân loại recency, frequency, monetary. tạo bảng tạm chưa data
+select * into #temp from (
+select *, concat(R,F,M) as RFM from (
+select CustomerID, recency ,frequency , monetary , case when recency >= 9 and recency < 40 then '4'
+when recency >= 40 and recency < 68 then '3'
+when recency >= 68 and recency < 80 then '2'
+else '1' end as R , 
+     
+case when frequency >= 1 and frequency < 2 then '1'
+when frequency >= 2 and frequency < 3 then '2'
+when frequency >= 3 and frequency < 4 then '3'
+else '4' end as F,
+     
+case when monetary >= 0 and monetary < 50000 then '1'
+when monetary >= 50000 and monetary < 100000 then '2'
+when monetary >= 100000 and monetary < 1000000 then '3'
+else '4' end as M
+from dbo.CRM_RFM_SUMMARY crs  ) A )B
+
+--Phân loại khách hàng theo RFM
+
+select * ,
+CASE 
+		WHEN RFM IN ('444') THEN 'KH Vip'
+		When RFM IN ('443','344','434') THEN 'KH VIP tiềm năng'
+		When RFM IN ('332','233','323') THEN 'KH tiềm năng'
+		WHEN RFM IN ('224', '234', '324', '334') THEN 'KH chi tieu nhieu'
+		WHEN RFM IN ('242', '243', '342', '343') THEN 'KH thuong xuyen' 
+		WHEN RFM IN ('422', '423', '432', '433') THEN 'KH mua gan day'
+		WHEN RFM IN ('114') THEN 'KH vip sap mat'
+		WHEN RFM IN ('111') THEN 'KH da mat'
+		ELSE 'KH binh thuong'
+	END AS nhom_khach_hang
+FROM #temp
